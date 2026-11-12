@@ -1,0 +1,6 @@
+{
+  "name": "My Personal Cloud (MPC)",
+  "description": "Managed personal digital identity, website management, cloud storage and productivity platform for individuals, professionals, and businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

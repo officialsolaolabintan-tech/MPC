@@ -1,0 +1,336 @@
+{
+  "entities": {
+    "Staff": {
+      "title": "Staff",
+      "description": "Authorized MPC internal personnel account with role-based access control.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email", "description": "Staff work email" },
+        "name": { "type": "string", "maxLength": 100, "description": "Staff full name" },
+        "role": { "type": "string", "enum": ["super_admin", "admin", "sales_agent", "content_manager", "developer"] },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "name", "role", "status", "createdAt"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer digital identity and account record.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string", "description": "Unique customer tenant ID" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 25 },
+        "businessName": { "type": "string", "maxLength": 150 },
+        "packageId": { "type": "string", "enum": ["starter", "pro", "premium"] },
+        "storeAddonActive": { "type": "boolean" },
+        "onboardingStatus": { "type": "string", "enum": ["enquiry", "payment_pending", "info_collection", "generating", "in_review", "approved", "published"] },
+        "subdomain": { "type": "string", "maxLength": 63 },
+        "customDomain": { "type": "string", "maxLength": 120 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerId", "email", "name", "packageId", "onboardingStatus", "createdAt"]
+    },
+    "Enquiry": {
+      "title": "Enquiry",
+      "description": "Inbound prospective customer lead submitted via public channels.",
+      "type": "object",
+      "properties": {
+        "enquiryId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string", "maxLength": 25 },
+        "interestedPackage": { "type": "string", "enum": ["starter", "pro", "premium", "undecided"] },
+        "includeStoreAddon": { "type": "boolean" },
+        "message": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["new", "contacted", "converted", "closed"] },
+        "assignedAgentId": { "type": "string" },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "status", "createdAt"]
+    },
+    "Package": {
+      "title": "Package",
+      "description": "Configurable MPC subscription tier.",
+      "type": "object",
+      "properties": {
+        "packageId": { "type": "string", "enum": ["starter", "pro", "premium"] },
+        "name": { "type": "string", "maxLength": 50 },
+        "priceNgn": { "type": "number", "description": "Price in Nigerian Naira (₦)" },
+        "pageAllowance": { "type": "number" },
+        "storageLimitGb": { "type": "number" },
+        "customDomainSupport": { "type": "boolean" },
+        "googleDriveBackup": { "type": "boolean" },
+        "prioritySupport": { "type": "boolean" },
+        "description": { "type": "string", "maxLength": 300 },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["packageId", "name", "priceNgn", "pageAllowance", "storageLimitGb", "isActive"]
+    },
+    "WebsiteProject": {
+      "title": "WebsiteProject",
+      "description": "Customer managed website configuration and deployment state.",
+      "type": "object",
+      "properties": {
+        "projectId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "templateId": { "type": "string" },
+        "subdomain": { "type": "string", "maxLength": 63 },
+        "customDomain": { "type": "string", "maxLength": 120 },
+        "status": { "type": "string", "enum": ["draft", "generating", "in_review", "approved", "published"] },
+        "reviewerNotes": { "type": "string", "maxLength": 1000 },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["projectId", "customerId", "templateId", "subdomain", "status", "updatedAt"]
+    },
+    "WebsiteContent": {
+      "title": "WebsiteContent",
+      "description": "Structured profile information and curated sections for the customer website.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "headline": { "type": "string", "maxLength": 150 },
+        "tagline": { "type": "string", "maxLength": 200 },
+        "biography": { "type": "string", "maxLength": 3000 },
+        "avatarUrl": { "type": "string" },
+        "bannerUrl": { "type": "string" },
+        "whatsappNumber": { "type": "string", "maxLength": 25 },
+        "contactEmail": { "type": "string", "format": "email" },
+        "phone": { "type": "string", "maxLength": 25 },
+        "location": { "type": "string", "maxLength": 100 },
+        "socialLinks": { "type": "object" },
+        "services": { "type": "array" },
+        "galleryImages": { "type": "array" },
+        "experience": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerId", "headline", "updatedAt"]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "Private customer cloud document file record.",
+      "type": "object",
+      "properties": {
+        "documentId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 50 },
+        "fileUrl": { "type": "string" },
+        "fileSizeKb": { "type": "number" },
+        "mimeType": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["documentId", "customerId", "title", "createdAt"]
+    },
+    "Picture": {
+      "title": "Picture",
+      "description": "Private customer cloud photo record and website gallery asset.",
+      "type": "object",
+      "properties": {
+        "pictureId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "photoUrl": { "type": "string" },
+        "album": { "type": "string", "maxLength": 50 },
+        "isWebsiteAsset": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["pictureId", "customerId", "title", "photoUrl", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Private customer productivity task item.",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 180 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "status": { "type": "string", "enum": ["todo", "in_progress", "completed"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["taskId", "customerId", "title", "priority", "status", "createdAt"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "Customer activity tracker and routine log.",
+      "type": "object",
+      "properties": {
+        "activityId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["activityId", "customerId", "title", "completed", "createdAt"]
+    },
+    "CalendarEvent": {
+      "title": "CalendarEvent",
+      "description": "Customer appointments and schedule items.",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "location": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["eventId", "customerId", "title", "startDate", "endDate"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "Customer private notes and memos.",
+      "type": "object",
+      "properties": {
+        "noteId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "content": { "type": "string", "maxLength": 5000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["noteId", "customerId", "title", "content", "updatedAt"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Customer goals and milestone targets.",
+      "type": "object",
+      "properties": {
+        "goalId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "targetDate": { "type": "string" },
+        "progressPercentage": { "type": "number" },
+        "category": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["active", "achieved", "paused"] }
+      },
+      "required": ["goalId", "customerId", "title", "progressPercentage", "status"]
+    },
+    "Store": {
+      "title": "Store",
+      "description": "Customer My Store add-on configuration.",
+      "type": "object",
+      "properties": {
+        "storeId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "storeName": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "currency": { "type": "string", "maxLength": 5 },
+        "whatsappOrdering": { "type": "boolean" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["storeId", "customerId", "storeName", "currency", "isActive"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Product in a customer's My Store catalog.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "storeId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 120 },
+        "priceNgn": { "type": "number" },
+        "inventory": { "type": "number" },
+        "description": { "type": "string", "maxLength": 800 },
+        "imageUrl": { "type": "string" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["productId", "storeId", "customerId", "name", "priceNgn", "isActive"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Central system and staff audit trail entry.",
+      "type": "object",
+      "properties": {
+        "logId": { "type": "string" },
+        "actorId": { "type": "string" },
+        "actorName": { "type": "string", "maxLength": 100 },
+        "actorRole": { "type": "string", "maxLength": 50 },
+        "action": { "type": "string", "maxLength": 100 },
+        "targetEntity": { "type": "string", "maxLength": 50 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 500 },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["logId", "actorId", "action", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/staff/{uid}": {
+      "schema": "Staff",
+      "description": "Internal staff user profiles and RBAC role assignments."
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Customer digital identity and managed account records."
+    },
+    "/enquiries/{enquiryId}": {
+      "schema": "Enquiry",
+      "description": "Inbound customer leads and sales queue."
+    },
+    "/packages/{packageId}": {
+      "schema": "Package",
+      "description": "Platform package tiers and configuration."
+    },
+    "/websiteProjects/{projectId}": {
+      "schema": "WebsiteProject",
+      "description": "Customer managed website configuration and status."
+    },
+    "/websiteContent/{customerId}": {
+      "schema": "WebsiteContent",
+      "description": "Structured content used by the dynamic website engine."
+    },
+    "/documents/{documentId}": {
+      "schema": "Document",
+      "description": "Customer private cloud documents."
+    },
+    "/pictures/{pictureId}": {
+      "schema": "Picture",
+      "description": "Customer private photos and gallery assets."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Customer private task items."
+    },
+    "/activities/{activityId}": {
+      "schema": "Activity",
+      "description": "Customer daily activities and routines."
+    },
+    "/calendarEvents/{eventId}": {
+      "schema": "CalendarEvent",
+      "description": "Customer private calendar events."
+    },
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Customer private notes."
+    },
+    "/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "Customer private goals and milestones."
+    },
+    "/stores/{storeId}": {
+      "schema": "Store",
+      "description": "Customer My Store configuration."
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Customer store products."
+    },
+    "/activityLogs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "System and staff audit logs."
+    }
+  }
+}
